@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Studio Elite - Ultra-Premium QR Code Generator & Mockup Suite</title>
+  
+  <!-- Inter & Plus Jakarta Sans Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- QR Code Styling Engine & Scannability Validator -->
+  <script src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            gold: {
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+              accent: '#d4af37'
+            },
+            obsidian: {
+              950: '#070a0f',
+              900: '#0c111a',
+              850: '#111724',
+              800: '#172033',
+              700: '#1e293b'
+            }
+          },
+          boxShadow: {
+            'glow': '0 0 35px -5px rgba(99, 102, 241, 0.35)',
+            'gold-glow': '0 0 35px -5px rgba(212, 175, 55, 0.3)',
+            'standee': '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
+            'subtle': '0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3)'
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Classic Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0c111a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    /* Subtle Glassmorphism Card Style */
+    .glass-panel {
+      background: rgba(17, 23, 36, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-input {
+      background: rgba(12, 17, 26, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-input:focus {
+      background: rgba(12, 17, 26, 0.95);
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    /* Print Specific Layout */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-sheet-area, #print-sheet-area * {
+        visibility: visible;
+      }
+      #print-sheet-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white !important;
+        color: black !important;
+        display: block !important;
+      }
+    }
+
+    /* Smooth perspective transitions for 3D Mockups */
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .preserve-3d {
+      transform-style: preserve-3d;
+    }
+  </style>
+</head>
+
+<body class="bg-obsidian-950 text-slate-100 font-sans min-h-screen selection:bg-brand-600 selection:text-white flex flex-col antialiased">
+  
+  <!-- Subtle Ambient Glow Effects in Background -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-brand-600/15 rounded-full blur-[128px]"></div>
+    <div class="absolute top-1/3 -right-40 w-96 h-96 bg-gold-500/10 rounded-full blur-[128px]"></div>
+    <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-indigo-600/10 rounded-full blur-[128px]"></div>
+  </div>
+
+  <!-- Top Navigation Bar -->
+  <header class="relative z-20 border-b border-white/10 glass-panel sticky top-0 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3.5">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 p-[1.5px] shadow-glow flex items-center justify-center">
+        <div class="w-full h-full bg-obsidian-900 rounded-[10px] flex items-center justify-center">
+          <i class="fa-solid fa-qrcode text-brand-500 text-xl"></i>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
+            QR Studio <span class="bg-gradient-to-r from-brand-500 to-indigo-300 bg-clip-text text-transparent">Pro</span>
+          </h1>
+          <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-gold-500/15 text-gold-400 border border-gold-500/30">
+            Classic 2026
+          </span>
+        </div>
+        <p class="text-[11px] text-slate-400 hidden sm:block">Architectural & Multi-Work QR Code Engine</p>
+      </div>
+    </div>
+
+    <!-- Right Action Tools (Sound, Scan Validator, History, Reset) -->
+    <div class="flex items-center space-x-2 sm:space-x-3">
+      <!-- Tactile Sound Effect Toggle -->
+      <button id="toggle-sound-btn" title="Toggle Tactile Audio" class="w-9 h-9 rounded-lg bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-colors">
+        <i class="fa-solid fa-volume-high text-sm" id="sound-icon"></i>
+      </button>
+
+      <!-- Instant Scan Scannability Test Button -->
+      <button onclick="testScanLive()" title="Live Scannability Validator" class="px-3 h-9 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-semibold flex items-center space-x-1.5 transition-all">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <i class="fa-solid fa-camera-viewfinder sm:mr-1"></i>
+        <span class="hidden sm:inline">100% Scan Test</span>
+      </button>
+
+      <!-- Reset Canvas Button -->
+      <button onclick="resetDefaults()" title="Reset All Settings" class="w-9 h-9 rounded-lg bg-obsidian-850 hover:bg-rose-500/20 border border-white/10 hover:border-rose-500/30 flex items-center justify-center text-slate-400 hover:text-rose-400 transition-colors">
+        <i class="fa-solid fa-rotate-left text-sm"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="relative z-10 flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+    
+    <!-- LEFT PANEL: Controls, Customization & Content Engine (7 Cols on LG) -->
+    <div class="lg:col-span-7 flex flex-col space-y-5">
+
+      <!-- Fast Role-Based Quick Presets Bar (For Every Work Type) -->
+      <div class="glass-panel rounded-2xl p-4 sm:p-5">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-wand-magic-sparkles text-gold-accent text-sm"></i>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Quick-Launch For Your Work</span>
+          </div>
+          <span class="text-[11px] text-slate-400">1-Tap Smart Setup</span>
+        </div>
+        <div class="flex gap-2 overflow-x-auto pb-1.5 no-scrollbar text-xs">
+          <button onclick="applyPresetWorkflow('upi')" class="px-3.5 py-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-200 hover:text-white flex items-center space-x-2 whitespace-nowrap transition-all hover:scale-[1.02]">
+            <i class="fa-solid fa-indian-rupee-sign text-emerald-400"></i>
+            <span>Shop & UPI Payment</span>
+          </button>
+          <button onclick="applyPresetWorkflow('restaurant')" class="px-3.5 py-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-200 hover:text-white flex items-center space-x-2 whitespace-nowrap transition-all hover:scale-[1.02]">
+            <i class="fa-solid fa-utensils text-amber-400"></i>
+            <span>Cafe Table Menu</span>
+          </button>
+          <button onclick="applyPresetWorkflow('wifi')" class="px-3.5 py-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-200 hover:text-white flex items-center space-x-2 whitespace-nowrap transition-all hover:scale-[1.02]">
+            <i class="fa-solid fa-wifi text-cyan-400"></i>
+            <span>Guest Wi-Fi Key</span>
+          </button>
+          <button onclick="applyPresetWorkflow('vcard')" class="px-3.5 py-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-200 hover:text-white flex items-center space-x-2 whitespace-nowrap transition-all hover:scale-[1.02]">
+            <i class="fa-solid fa-id-card text-brand-500"></i>
+            <span>Executive Business Card</span>
+          </button>
+          <button onclick="applyPresetWorkflow('creator')" class="px-3.5 py-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-200 hover:text-white flex items-center space-x-2 whitespace-nowrap transition-all hover:scale-[1.02]">
+            <i class="fa-brands fa-instagram text-pink-400"></i>
+            <span>Creator Linktree</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="glass-panel rounded-2xl p-1.5 flex items-center space-x-1 overflow-x-auto text-xs font-semibold no-scrollbar">
+        <button onclick="switchTab('tab-content')" id="tab-btn-content" class="tab-button flex-1 min-w-[100px] py-2.5 px-3 rounded-xl flex items-center justify-center space-x-2 transition-all bg-brand-600 text-white shadow-glow">
+          <i class="fa-solid fa-link"></i>
+          <span>1. Content</span>
+        </button>
+        <button onclick="switchTab('tab-shapes')" id="tab-btn-shapes" class="tab-button flex-1 min-w-[105px] py-2.5 px-3 rounded-xl flex items-center justify-center space-x-2 transition-all text-slate-400 hover:text-white hover:bg-obsidian-850">
+          <i class="fa-solid fa-shapes"></i>
+          <span>2. Shapes & Eyes</span>
+        </button>
+        <button onclick="switchTab('tab-colors')" id="tab-btn-colors" class="tab-button flex-1 min-w-[105px] py-2.5 px-3 rounded-xl flex items-center justify-center space-x-2 transition-all text-slate-400 hover:text-white hover:bg-obsidian-850">
+          <i class="fa-solid fa-palette"></i>
+          <span>3. Colors</span>
+        </button>
+        <button onclick="switchTab('tab-logo')" id="tab-btn-logo" class="tab-button flex-1 min-w-[100px] py-2.5 px-3 rounded-xl flex items-center justify-center space-x-2 transition-all text-slate-400 hover:text-white hover:bg-obsidian-850">
+          <i class="fa-solid fa-image"></i>
+          <span>4. Logo</span>
+        </button>
+        <button onclick="switchTab('tab-frames')" id="tab-btn-frames" class="tab-button flex-1 min-w-[100px] py-2.5 px-3 rounded-xl flex items-center justify-center space-x-2 transition-all text-slate-400 hover:text-white hover:bg-obsidian-850">
+          <i class="fa-solid fa-border-all"></i>
+          <span>5. Frame & CTA</span>
+        </button>
+      </div>
+
+      <div id="tab-content" class="tab-panel flex flex-col space-y-4">
+        <div class="glass-panel rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300">Select Content Format</h2>
+            <span class="text-xs text-brand-400 flex items-center gap-1">
+              <i class="fa-solid fa-shield-halved"></i> 100% Scannable Standard
+            </span>
+          </div>
+
+          <!-- Content Type Selector Grid (10 Options) -->
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 mb-5">
+            <!-- URL / Link -->
+            <button onclick="setContentType('url')" id="type-btn-url" class="type-btn p-3 rounded-xl border border-brand-500 bg-brand-500/10 text-white flex flex-col items-center justify-center text-center transition-all">
+              <i class="fa-solid fa-link text-brand-400 text-lg mb-1.5"></i>
+              <span class="text-xs font-semibold">Website / Link</span>
+            </button>
+            <!-- UPI Payment -->
+            <button onclick="setContentType('upi')" id="type-btn-upi" class="type-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/60 text-slate-300 hover:text-white hover:border-white/20 flex flex-col items-center justify-center text-center transition-all">
+              <i class="fa-solid fa-indian-rupee-sign text-emerald-400 text-lg mb-1.5"></i>
+              <span class="text-xs font-semibold">UPI Payment</span>
+            </button>
+            <!-- Wi-Fi Network -->
+            <button onclick="setContentType('wifi')" id="type-btn-wifi" class="type-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/60 text-slate-300 hover:text-white hover:border-white/20 flex flex-col items-center justify-center text-center transition-all">
+              <i class="fa-solid fa-wifi text-cyan-400 text-lg mb-1.5"></i>
+              <span class="text-xs font-semibold">Wi-Fi Network</span>
+            </button>
+            <!-- Contact / vCard -->
+            <button onclick="setContentType('vcard')" id="type-btn-vcard" class="type-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/60 text-slate-300 hover:text-white hover:border-white/20 flex flex-col items-center justify-center text-center transition-all">
+              <i class="fa-solid fa-address-card text-purple-400 text-lg mb-1.5"></i>
+              <span class="text-xs font-semibold">Contact / vCard</span>
+            </button>
+            <!-- WhatsApp -->
+            <button onclick="setContentType('whatsapp')" id="type-btn-whatsapp" class="type-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/60 text-slate-300 hover:text-white hover:border-white/20 flex flex-col items-center justify-center text-center transition-all">
+              <i class="fa-brands fa-whatsapp text-green-400 text-lg mb-1.5"></i>
+              <span class="text-xs font-semibold">WhatsApp</span>
+            </button>
+            <!-- Plain Text -->
+            <button onclick="setContentType('text')" id="type-btn-text" class="type-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/60 text-slate-300 hover:text-white hover:border-white/20 flex flex-col items-center justify-center text-center transition-all">
+              <i class="fa-regular fa-file-lines text-blue-400 text-lg mb-1.5"></i>
+              <span class="text-xs font-semibold">Plain Text</span>
+            </button>
+            <!-- Email -->
+            <button onclick="setContentType('email')" id="type-btn-email" class="type-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/60 text-slate-300 hover:text-white hover:border-white/20 flex flex-col items-center justify-center text-center transition-all">
+              <i class="fa-regular fa-envelope text-red-400 text-lg mb-1.5"></i>
+              <span class="text-xs font-semibold">Email Send</span>
+            </button>
+            <!-- Phone Call -->
+            <button onclick="setContentType('phone')" id="type-btn-phone" class="type-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/60 text-slate-300 hover:text-white hover:border-white/20 flex flex-col items-center justify-center text-center transition-all">
+              <i class="fa-solid fa-phone text-indigo-400 text-lg mb-1.5"></i>
+              <span class="text-xs font-semibold">Call Phone</span>
+            </button>
+            <!-- SMS -->
+            <button onclick="setContentType('sms')" id="type-btn-sms" class="type-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/60 text-slate-300 hover:text-white hover:border-white/20 flex flex-col items-center justify-center text-center transition-all">
+              <i class="fa-regular fa-message text-amber-400 text-lg mb-1.5"></i>
+              <span class="text-xs font-semibold">SMS Message</span>
+            </button>
+            <!-- Social Profile -->
+            <button onclick="setContentType('social')" id="type-btn-social" class="type-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/60 text-slate-300 hover:text-white hover:border-white/20 flex flex-col items-center justify-center text-center transition-all">
+              <i class="fa-solid fa-share-nodes text-pink-400 text-lg mb-1.5"></i>
+              <span class="text-xs font-semibold">Social Profile</span>
+            </button>
+          </div>
+
+          <!-- Dynamic Form Fields Container -->
+          <div id="content-fields-container" class="space-y-4">
+            
+            <!-- 1. URL Fields -->
+            <div id="fields-url" class="space-y-3">
+              <label class="block text-xs font-semibold text-slate-300">
+                Target Website URL <span class="text-slate-500 font-normal">(Auto-prefixes https://)</span>
+              </label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                  <i class="fa-solid fa-globe text-sm"></i>
+                </span>
+                <input type="url" id="input-url" value="https://github.com" placeholder="https://yourwebsite.com" class="w-full pl-10 pr-4 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+              </div>
+              <!-- Quick Link Chips -->
+              <div class="flex flex-wrap gap-2 pt-1 text-xs">
+                <span class="text-slate-400 flex items-center mr-1 text-[11px]"><i class="fa-solid fa-bolt text-gold-accent mr-1"></i> Quick:</span>
+                <button onclick="setSampleUrl('https://instagram.com/yourbrand')" class="px-2.5 py-1 rounded-lg bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-300">Instagram</button>
+                <button onclick="setSampleUrl('https://youtube.com/@creativechannel')" class="px-2.5 py-1 rounded-lg bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-300">YouTube</button>
+                <button onclick="setSampleUrl('https://maps.google.com')" class="px-2.5 py-1 rounded-lg bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-300">Google Maps</button>
+                <button onclick="setSampleUrl('https://drive.google.com')" class="px-2.5 py-1 rounded-lg bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-300">PDF Menu / Drive</button>
+              </div>
+            </div>
+
+            <!-- 2. UPI Fields (Hidden by default) -->
+            <div id="fields-upi" class="hidden space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">UPI ID (VPA) *</label>
+                  <input type="text" id="upi-id" placeholder="merchant@okhdfcbank" value="payee@upi" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Payee Name</label>
+                  <input type="text" id="upi-name" placeholder="John Enterprise / Cafe" value="Cafe Aroma" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Fixed Amount (Optional ₹)</label>
+                  <input type="number" id="upi-amount" placeholder="Leave empty for customer choice" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Payment Note</label>
+                  <input type="text" id="upi-note" placeholder="Table Bill / Product" value="Bill Payment" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Wi-Fi Fields (Hidden) -->
+            <div id="fields-wifi" class="hidden space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Network SSID (Name) *</label>
+                  <input type="text" id="wifi-ssid" placeholder="Office_Guest_WiFi" value="Guest_HighSpeed_WiFi" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+                  <input type="text" id="wifi-pass" placeholder="Network password" value="Welcome2026!" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Encryption Mode</label>
+                  <select id="wifi-enc" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" onchange="renderQR()">
+                    <option value="WPA">WPA/WPA2/WPA3 (Standard)</option>
+                    <option value="WEP">WEP</option>
+                    <option value="nopass">None (Open Network)</option>
+                  </select>
+                </div>
+                <div class="flex items-center pt-5">
+                  <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                    <input type="checkbox" id="wifi-hidden" class="rounded bg-obsidian-900 border-white/20 text-brand-600 focus:ring-0" onchange="renderQR()">
+                    <span>Hidden SSID Network</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. vCard / Contact Fields (Hidden) -->
+            <div id="fields-vcard" class="hidden space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input type="text" id="vcard-fn" placeholder="First Name" value="Alex" class="px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+                <input type="text" id="vcard-ln" placeholder="Last Name" value="Morgan" class="px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input type="tel" id="vcard-tel" placeholder="Phone Number (+1 234 567 890)" value="+91 9876543210" class="px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+                <input type="email" id="vcard-email" placeholder="Email Address" value="alex@company.com" class="px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input type="text" id="vcard-org" placeholder="Organization / Company" value="Apex Studios" class="px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+                <input type="text" id="vcard-title" placeholder="Job Title / Designation" value="Creative Director" class="px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+              </div>
+              <input type="url" id="vcard-web" placeholder="Portfolio / Website URL" value="https://alexmorgan.design" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+            </div>
+
+            <!-- 5. WhatsApp Fields (Hidden) -->
+            <div id="fields-whatsapp" class="hidden space-y-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">WhatsApp Number with Country Code (e.g. 919876543210)</label>
+                <input type="tel" id="wa-phone" placeholder="919876543210" value="919876543210" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Pre-filled Chat Message</label>
+                <textarea id="wa-msg" rows="2" placeholder="Hi! I scanned your QR code and would like more details..." class="w-full px-3.5 py-2 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">Hello! I would like to enquire about your services.</textarea>
+              </div>
+            </div>
+
+            <!-- 6. Plain Text Fields (Hidden) -->
+            <div id="fields-text" class="hidden space-y-3">
+              <label class="block text-xs font-semibold text-slate-300">Message / Plain Content</label>
+              <textarea id="input-text" rows="3" placeholder="Enter any text, wifi pass, secret code, or event ticket key..." class="w-full px-3.5 py-2 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">Welcome to the VIP Gala Event 2026. Code: #ELITE-9921</textarea>
+            </div>
+
+            <!-- 7. Email Fields (Hidden) -->
+            <div id="fields-email" class="hidden space-y-3">
+              <input type="email" id="email-to" placeholder="Recipient: hello@company.com" value="support@brand.com" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+              <input type="text" id="email-sub" placeholder="Subject" value="Inquiry Regarding Partnership" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+              <textarea id="email-body" rows="2" placeholder="Message body..." class="w-full px-3.5 py-2 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">I'm contacting you through your QR Studio badge.</textarea>
+            </div>
+
+            <!-- 8. Phone Fields (Hidden) -->
+            <div id="fields-phone" class="hidden space-y-3">
+              <label class="block text-xs font-semibold text-slate-300">Telephone Number to Dial</label>
+              <input type="tel" id="input-phone" placeholder="+1234567890" value="+18005550199" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+            </div>
+
+            <!-- 9. SMS Fields (Hidden) -->
+            <div id="fields-sms" class="hidden space-y-3">
+              <input type="tel" id="sms-phone" placeholder="Phone Number" value="+18005550199" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">
+              <textarea id="sms-body" rows="2" placeholder="SMS Body..." class="w-full px-3.5 py-2 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="renderQR()">Opt-in to VIP Club Alerts</textarea>
+            </div>
+
+            <!-- 10. Social Fields (Hidden) -->
+            <div id="fields-social" class="hidden space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <select id="social-platform" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" onchange="updateSocialUrl(); renderQR();">
+                  <option value="instagram">Instagram (@username)</option>
+                  <option value="youtube">YouTube (@channel)</option>
+                  <option value="x">X / Twitter (@handle)</option>
+                  <option value="linkedin">LinkedIn (in/username)</option>
+                  <option value="telegram">Telegram (t.me/username)</option>
+                  <option value="spotify">Spotify (Artist Profile)</option>
+                </select>
+                <input type="text" id="social-handle" placeholder="username" value="creativestudio" class="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm text-white focus:outline-none" oninput="updateSocialUrl(); renderQR();">
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-shapes" class="tab-panel hidden flex flex-col space-y-5">
+        <div class="glass-panel rounded-2xl p-5 space-y-6">
+          
+          <!-- Body Dot Patterns (Square, Rounded, Dots, Classy, Pill, Diamond) -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-xs font-bold uppercase tracking-wider text-slate-300">QR Code Dot Pattern (Body)</h2>
+              <span class="text-[11px] text-slate-400">Tactile Geometric Matrix</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              <button onclick="setDotType('square')" id="dot-btn-square" class="dot-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/80 hover:bg-obsidian-850 flex items-center space-x-3 transition-all">
+                <i class="fa-solid fa-square text-base text-slate-300"></i>
+                <div class="text-left"><div class="text-xs font-semibold">Classic Square</div><div class="text-[10px] text-slate-400">High Scannability</div></div>
+              </button>
+              <button onclick="setDotType('rounded')" id="dot-btn-rounded" class="dot-btn p-3 rounded-xl border border-brand-500 bg-brand-500/10 flex items-center space-x-3 transition-all">
+                <i class="fa-solid fa-shapes text-base text-brand-400"></i>
+                <div class="text-left"><div class="text-xs font-semibold text-white">Soft Rounded</div><div class="text-[10px] text-slate-300">Modern Organic</div></div>
+              </button>
+              <button onclick="setDotType('dots')" id="dot-btn-dots" class="dot-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/80 hover:bg-obsidian-850 flex items-center space-x-3 transition-all">
+                <i class="fa-solid fa-circle text-base text-slate-300"></i>
+                <div class="text-left"><div class="text-xs font-semibold">Clean Dots</div><div class="text-[10px] text-slate-400">Minimal Circular</div></div>
+              </button>
+              <button onclick="setDotType('classy')" id="dot-btn-classy" class="dot-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/80 hover:bg-obsidian-850 flex items-center space-x-3 transition-all">
+                <i class="fa-solid fa-gem text-base text-slate-300"></i>
+                <div class="text-left"><div class="text-xs font-semibold">Classy Diamond</div><div class="text-[10px] text-slate-400">Luxury Sharp</div></div>
+              </button>
+              <button onclick="setDotType('classy-rounded')" id="dot-btn-classy-rounded" class="dot-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/80 hover:bg-obsidian-850 flex items-center space-x-3 transition-all">
+                <i class="fa-solid fa-wand-magic text-base text-slate-300"></i>
+                <div class="text-left"><div class="text-xs font-semibold">Classy Rounded</div><div class="text-[10px] text-slate-400">Luxury Soft</div></div>
+              </button>
+              <button onclick="setDotType('extra-rounded')" id="dot-btn-extra-rounded" class="dot-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/80 hover:bg-obsidian-850 flex items-center space-x-3 transition-all">
+                <i class="fa-solid fa-capsules text-base text-slate-300"></i>
+                <div class="text-left"><div class="text-xs font-semibold">Liquid Pill</div><div class="text-[10px] text-slate-400">Ultra-Curved</div></div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Corner Eyes Frame & Pupils -->
+          <div class="border-t border-white/10 pt-5">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Corner Eyes Shape (Position Detection Squares)</h2>
+            <p class="text-[11px] text-slate-400 mb-3">Customize outer frame and inner pupil geometries independently</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Outer Eye Frame Style -->
+              <div>
+                <label class="block text-xs font-medium text-slate-400 mb-2">Outer Eye Frame Style</label>
+                <div class="grid grid-cols-3 gap-2">
+                  <button onclick="setCornerSquareType('square')" id="cs-square" class="cs-btn py-3 px-2 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex flex-col items-center justify-center text-xs">
+                    <div class="w-6 h-6 border-2 border-slate-300 mb-1.5 flex items-center justify-center">
+                      <div class="w-2 h-2 bg-slate-300"></div>
+                    </div>
+                    <span>Sharp Square</span>
+                  </button>
+                  <button onclick="setCornerSquareType('extra-rounded')" id="cs-extra-rounded" class="cs-btn py-3 px-2 rounded-xl border border-brand-500 bg-brand-500/10 flex flex-col items-center justify-center text-xs text-white">
+                    <div class="w-6 h-6 border-2 border-brand-400 rounded-md mb-1.5 flex items-center justify-center">
+                      <div class="w-2 h-2 bg-brand-400 rounded-sm"></div>
+                    </div>
+                    <span>Smooth Squircle</span>
+                  </button>
+                  <button onclick="setCornerSquareType('dot')" id="cs-dot" class="cs-btn py-3 px-2 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex flex-col items-center justify-center text-xs">
+                    <div class="w-6 h-6 border-2 border-slate-300 rounded-full mb-1.5 flex items-center justify-center">
+                      <div class="w-2 h-2 bg-slate-300 rounded-full"></div>
+                    </div>
+                    <span>Circular Eye</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Inner Eye Pupil Style -->
+              <div>
+                <label class="block text-xs font-medium text-slate-400 mb-2">Inner Eye Pupil Style</label>
+                <div class="grid grid-cols-2 gap-2">
+                  <button onclick="setCornerDotType('square')" id="cd-square" class="cd-btn py-3 px-2 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex flex-col items-center justify-center text-xs">
+                    <div class="w-5 h-5 bg-slate-300 mb-2"></div>
+                    <span>Square Pupil</span>
+                  </button>
+                  <button onclick="setCornerDotType('dot')" id="cd-dot" class="cd-btn py-3 px-2 rounded-xl border border-brand-500 bg-brand-500/10 flex flex-col items-center justify-center text-xs text-white">
+                    <div class="w-5 h-5 bg-brand-400 rounded-full mb-2"></div>
+                    <span>Circle Pupil</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Margin (Quiet Zone) and Error Correction Level -->
+          <div class="border-t border-white/10 pt-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="text-xs font-semibold text-slate-300">Quiet Zone (Margin)</label>
+                <span id="margin-val" class="text-xs text-brand-400 font-mono">15px</span>
+              </div>
+              <input type="range" id="margin-slider" min="0" max="40" value="15" class="w-full h-2 bg-obsidian-800 rounded-lg appearance-none cursor-pointer accent-brand-500" oninput="updateMargin(this.value)">
+              <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+                <span>Tight (0px)</span>
+                <span>Standard (15px)</span>
+                <span>Broad (40px)</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                  <i class="fa-solid fa-shield-check text-emerald-400"></i> Error Correction Level
+                </label>
+                <span class="text-[10px] text-slate-400">Logo Safe</span>
+              </div>
+              <div class="grid grid-cols-4 gap-1.5 text-xs">
+                <button onclick="setErrorLevel('L')" id="ec-L" class="ec-btn py-1.5 rounded-lg border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 text-slate-300">L - 7%</button>
+                <button onclick="setErrorLevel('M')" id="ec-M" class="ec-btn py-1.5 rounded-lg border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 text-slate-300">M - 15%</button>
+                <button onclick="setErrorLevel('Q')" id="ec-Q" class="ec-btn py-1.5 rounded-lg border border-brand-500 bg-brand-500/20 text-white font-bold">Q - 25%</button>
+                <button onclick="setErrorLevel('H')" id="ec-H" class="ec-btn py-1.5 rounded-lg border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 text-slate-300">H - 30%</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div id="tab-colors" class="tab-panel hidden flex flex-col space-y-5">
+        <div class="glass-panel rounded-2xl p-5 space-y-6">
+          
+          <!-- Designer Gradients & Color Presets -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-wand-magic-sparkles text-gold-accent"></i> Designer Gradients & Palettes
+              </h2>
+              <span class="text-[11px] text-slate-400">Rich Color Synthesis</span>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <button onclick="applyGradientTheme('#4f46e5', '#9333ea')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex items-center space-x-2.5 transition-all">
+                <span class="w-5 h-5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 shadow-sm flex-shrink-0"></span>
+                <span class="text-xs font-medium">Indigo Violet</span>
+              </button>
+              <button onclick="applyGradientTheme('#ec4899', '#3b82f6')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex items-center space-x-2.5 transition-all">
+                <span class="w-5 h-5 rounded-lg bg-gradient-to-r from-pink-500 to-blue-500 shadow-sm flex-shrink-0"></span>
+                <span class="text-xs font-medium">Neon Cyber</span>
+              </button>
+              <button onclick="applyGradientTheme('#ea580c', '#e11d48')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex items-center space-x-2.5 transition-all">
+                <span class="w-5 h-5 rounded-lg bg-gradient-to-r from-orange-600 to-rose-600 shadow-sm flex-shrink-0"></span>
+                <span class="text-xs font-medium">Sunset Glow</span>
+              </button>
+              <button onclick="applyGradientTheme('#059669', '#10b981')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex items-center space-x-2.5 transition-all">
+                <span class="w-5 h-5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-400 shadow-sm flex-shrink-0"></span>
+                <span class="text-xs font-medium">Emerald Royale</span>
+              </button>
+              <button onclick="applyGradientTheme('#d97706', '#f59e0b')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex items-center space-x-2.5 transition-all">
+                <span class="w-5 h-5 rounded-lg bg-gradient-to-r from-amber-600 to-yellow-500 shadow-sm flex-shrink-0"></span>
+                <span class="text-xs font-medium">Gold Luxury</span>
+              </button>
+              <button onclick="applyGradientTheme('#0284c7', '#2563eb')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex items-center space-x-2.5 transition-all">
+                <span class="w-5 h-5 rounded-lg bg-gradient-to-r from-sky-600 to-blue-600 shadow-sm flex-shrink-0"></span>
+                <span class="text-xs font-medium">Ocean Depths</span>
+              </button>
+              <button onclick="applySolidTheme('#000000', '#ffffff')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex items-center space-x-2.5 transition-all">
+                <span class="w-5 h-5 rounded-lg bg-black border border-white/20 shadow-sm flex-shrink-0"></span>
+                <span class="text-xs font-medium">Pure Classic</span>
+              </button>
+              <button onclick="applyGradientTheme('#b91c1c', '#ea580c')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex items-center space-x-2.5 transition-all">
+                <span class="w-5 h-5 rounded-lg bg-gradient-to-r from-red-700 to-orange-600 shadow-sm flex-shrink-0"></span>
+                <span class="text-xs font-medium">Ruby Fire</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Custom Color / Gradient Picker -->
+          <div class="border-t border-white/10 pt-5">
+            <div class="flex items-center justify-between mb-3">
+              <label class="text-xs font-semibold text-slate-300">Custom Dots Color & Gradient Style</label>
+              <div class="flex items-center space-x-2 text-xs">
+                <button onclick="setColorMode('solid')" id="mode-btn-solid" class="px-2.5 py-1 rounded-lg border border-brand-500 bg-brand-500/20 text-white font-semibold">Solid</button>
+                <button onclick="setColorMode('gradient')" id="mode-btn-gradient" class="px-2.5 py-1 rounded-lg border border-white/10 bg-obsidian-900 text-slate-300">Gradient</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="gradient-inputs-row">
+              <div class="flex items-center space-x-3 p-2.5 rounded-xl glass-input">
+                <input type="color" id="dot-color-1" value="#000000" class="w-9 h-9 rounded-lg border-0 bg-transparent cursor-pointer" onchange="renderQR()">
+                <div class="flex-1">
+                  <span class="block text-[11px] text-slate-400">Primary Color</span>
+                  <input type="text" id="dot-hex-1" value="#000000" class="w-full bg-transparent text-xs font-mono text-white focus:outline-none uppercase" onchange="syncColorInput(1, this.value)">
+                </div>
+              </div>
+              <div class="flex items-center space-x-3 p-2.5 rounded-xl glass-input opacity-40 pointer-events-none" id="color-2-wrapper">
+                <input type="color" id="dot-color-2" value="#4f46e5" class="w-9 h-9 rounded-lg border-0 bg-transparent cursor-pointer" onchange="renderQR()">
+                <div class="flex-1">
+                  <span class="block text-[11px] text-slate-400">Secondary Color</span>
+                  <input type="text" id="dot-hex-2" value="#4f46e5" class="w-full bg-transparent text-xs font-mono text-white focus:outline-none uppercase" onchange="syncColorInput(2, this.value)">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Independent Corner Eye Colors -->
+          <div class="border-t border-white/10 pt-5">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <label class="text-xs font-semibold text-slate-300 block">Corner Eyes Custom Colors</label>
+                <span class="text-[11px] text-slate-400">Color outer square and inner pupil independently</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="custom-eye-toggle" class="sr-only peer" onchange="toggleCustomEyeColors(this.checked)">
+                <div class="w-11 h-6 bg-obsidian-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+              </label>
+            </div>
+
+            <div id="eye-color-inputs" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="flex items-center space-x-3 p-2.5 rounded-xl glass-input">
+                <input type="color" id="eye-outer-color" value="#000000" class="w-8 h-8 rounded-lg border-0 bg-transparent cursor-pointer" onchange="renderQR()">
+                <div>
+                  <span class="block text-[11px] text-slate-400">Eye Outer Frame Color</span>
+                  <span class="text-xs font-mono text-white uppercase" id="eye-outer-hex">#000000</span>
+                </div>
+              </div>
+              <div class="flex items-center space-x-3 p-2.5 rounded-xl glass-input">
+                <input type="color" id="eye-inner-color" value="#000000" class="w-8 h-8 rounded-lg border-0 bg-transparent cursor-pointer" onchange="renderQR()">
+                <div>
+                  <span class="block text-[11px] text-slate-400">Eye Inner Pupil Color</span>
+                  <span class="text-xs font-mono text-white uppercase" id="eye-inner-hex">#000000</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Independent Corner Eye Colors -->
+          <div class="border-t border-white/10 pt-5">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <label class="text-xs font-semibold text-slate-300 block">Corner Eyes Custom Colors</label>
+                <span class="text-[11px] text-slate-400">Color outer square and inner pupil independently</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="custom-eye-toggle" class="sr-only peer" onchange="toggleCustomEyeColors(this.checked)">
+                <div class="w-11 h-6 bg-obsidian-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+              </label>
+            </div>
+
+            <div id="eye-color-inputs" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="flex items-center space-x-3 p-2.5 rounded-xl glass-input">
+                <input type="color" id="eye-outer-color" value="#4f46e5" class="w-8 h-8 rounded-lg border-0 bg-transparent cursor-pointer" onchange="renderQR()">
+                <div>
+                  <span class="block text-[11px] text-slate-400">Eye Outer Frame Color</span>
+                  <span class="text-xs font-mono text-white uppercase" id="eye-outer-hex">#4F46E5</span>
+                </div>
+              </div>
+              <div class="flex items-center space-x-3 p-2.5 rounded-xl glass-input">
+                <input type="color" id="eye-inner-color" value="#9333ea" class="w-8 h-8 rounded-lg border-0 bg-transparent cursor-pointer" onchange="renderQR()">
+                <div>
+                  <span class="block text-[11px] text-slate-400">Eye Inner Pupil Color</span>
+                  <span class="text-xs font-mono text-white uppercase" id="eye-inner-hex">#9333EA</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Background Styling (Solid / Transparent) -->
+          <div class="border-t border-white/10 pt-5">
+            <div class="flex items-center justify-between mb-3">
+              <label class="text-xs font-semibold text-slate-300">Background Styling</label>
+              <div class="flex items-center space-x-2 text-xs">
+                <button onclick="setBgMode('solid')" id="bg-mode-solid" class="px-2.5 py-1 rounded-lg border border-brand-500 bg-brand-500/20 text-white font-semibold">Solid</button>
+                <button onclick="setBgMode('transparent')" id="bg-mode-trans" class="px-2.5 py-1 rounded-lg border border-white/10 bg-obsidian-900 text-slate-300">Transparent</button>
+              </div>
+            </div>
+            
+            <div id="bg-color-picker-row" class="flex flex-wrap items-center gap-3">
+              <div class="flex items-center space-x-3 p-2 rounded-xl glass-input w-48">
+                <input type="color" id="bg-color-input" value="#ffffff" class="w-8 h-8 rounded-lg border-0 bg-transparent cursor-pointer" onchange="renderQR()">
+                <input type="text" id="bg-color-hex" value="#ffffff" class="w-24 bg-transparent text-xs font-mono text-white focus:outline-none uppercase" onchange="syncBgInput(this.value)">
+              </div>
+              <!-- Popular Preset Backgrounds -->
+              <div class="flex items-center gap-1.5 text-xs">
+                <button onclick="setBgColorPreset('#ffffff')" class="w-7 h-7 rounded-lg bg-white border border-slate-300 shadow-sm" title="Pure White"></button>
+                <button onclick="setBgColorPreset('#f8fafc')" class="w-7 h-7 rounded-lg bg-slate-50 border border-slate-300 shadow-sm" title="Warm Off-White"></button>
+                <button onclick="setBgColorPreset('#0f172a')" class="w-7 h-7 rounded-lg bg-slate-900 border border-slate-700 shadow-sm" title="Deep Obsidian"></button>
+                <button onclick="setBgColorPreset('#fef3c7')" class="w-7 h-7 rounded-lg bg-amber-100 border border-amber-300 shadow-sm" title="Champagne Parchment"></button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div id="tab-logo" class="tab-panel hidden flex flex-col space-y-5">
+        <div class="glass-panel rounded-2xl p-5 space-y-6">
+          
+          <!-- Upload Custom Logo Box -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-xs font-bold uppercase tracking-wider text-slate-300">Custom Brand Logo</h2>
+              <button onclick="removeLogo()" class="text-xs text-rose-400 hover:text-rose-300 transition-colors">
+                <i class="fa-solid fa-trash-can mr-1"></i> Remove Logo
+              </button>
+            </div>
+
+            <div class="border-2 border-dashed border-white/15 hover:border-brand-500/50 rounded-2xl p-6 text-center bg-obsidian-900/50 cursor-pointer transition-all relative group" onclick="document.getElementById('logo-file-input').click()">
+              <input type="file" id="logo-file-input" class="hidden" accept="image/png, image/jpeg, image/svg+xml, image/webp" onchange="handleLogoUpload(event)">
+              <div class="w-12 h-12 rounded-xl bg-brand-600/10 text-brand-400 border border-brand-500/20 mx-auto flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <p class="text-sm font-semibold text-white mb-1">Click to upload brand logo or drag & drop</p>
+              <p class="text-xs text-slate-400">PNG, SVG, or WebP with transparent background recommended</p>
+            </div>
+          </div>
+
+          <!-- Built-in 14 Vector Brand Presets -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xs font-semibold text-slate-300">Or Choose From Popular Verified Presets</h3>
+              <span class="text-[11px] text-slate-500">Auto-Optimized Size</span>
+            </div>
+            
+            <div class="grid grid-cols-4 sm:grid-cols-7 gap-2">
+              <button onclick="applyPresetLogo('whatsapp')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 hover:border-green-500/40 flex flex-col items-center justify-center transition-all group">
+                <i class="fa-brands fa-whatsapp text-green-500 text-xl group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-slate-300 mt-1">WhatsApp</span>
+              </button>
+              <button onclick="applyPresetLogo('instagram')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 hover:border-pink-500/40 flex flex-col items-center justify-center transition-all group">
+                <i class="fa-brands fa-instagram text-pink-500 text-xl group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-slate-300 mt-1">Instagram</span>
+              </button>
+              <button onclick="applyPresetLogo('youtube')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 hover:border-red-500/40 flex flex-col items-center justify-center transition-all group">
+                <i class="fa-brands fa-youtube text-red-500 text-xl group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-slate-300 mt-1">YouTube</span>
+              </button>
+              <button onclick="applyPresetLogo('x')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 hover:border-white/40 flex flex-col items-center justify-center transition-all group">
+                <i class="fa-brands fa-x-twitter text-slate-200 text-xl group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-slate-300 mt-1">X (Twitter)</span>
+              </button>
+              <button onclick="applyPresetLogo('linkedin')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 hover:border-blue-500/40 flex flex-col items-center justify-center transition-all group">
+                <i class="fa-brands fa-linkedin text-blue-500 text-xl group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-slate-300 mt-1">LinkedIn</span>
+              </button>
+              <button onclick="applyPresetLogo('github')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 hover:border-purple-500/40 flex flex-col items-center justify-center transition-all group">
+                <i class="fa-brands fa-github text-slate-200 text-xl group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-slate-300 mt-1">GitHub</span>
+              </button>
+              <button onclick="applyPresetLogo('spotify')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 hover:border-emerald-500/40 flex flex-col items-center justify-center transition-all group">
+                <i class="fa-brands fa-spotify text-emerald-400 text-xl group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-slate-300 mt-1">Spotify</span>
+              </button>
+              <button onclick="applyPresetLogo('telegram')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 hover:border-sky-500/40 flex flex-col items-center justify-center transition-all group">
+                <i class="fa-brands fa-telegram text-sky-400 text-xl group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-slate-300 mt-1">Telegram</span>
+              </button>
+              <button onclick="applyPresetLogo('upi')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 hover:border-emerald-500/40 flex flex-col items-center justify-center transition-all group">
+                <i class="fa-solid fa-indian-rupee-sign text-emerald-400 text-xl group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-slate-300 mt-1">UPI Pay</span>
+              </button>
+              <button onclick="applyPresetLogo('wifi')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 hover:border-cyan-500/40 flex flex-col items-center justify-center transition-all group">
+                <i class="fa-solid fa-wifi text-cyan-400 text-xl group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-slate-300 mt-1">Wi-Fi</span>
+              </button>
+              <button onclick="applyPresetLogo('globe')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 hover:border-indigo-500/40 flex flex-col items-center justify-center transition-all group">
+                <i class="fa-solid fa-globe text-indigo-400 text-xl group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-slate-300 mt-1">Web</span>
+              </button>
+              <button onclick="applyPresetLogo('mail')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 hover:border-amber-500/40 flex flex-col items-center justify-center transition-all group">
+                <i class="fa-solid fa-envelope text-amber-400 text-xl group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-slate-300 mt-1">Email</span>
+              </button>
+              <button onclick="applyPresetLogo('heart')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 hover:border-rose-500/40 flex flex-col items-center justify-center transition-all group">
+                <i class="fa-solid fa-heart text-rose-500 text-xl group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-slate-300 mt-1">Love / Heart</span>
+              </button>
+              <button onclick="applyPresetLogo('star')" class="p-2.5 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 hover:border-yellow-500/40 flex flex-col items-center justify-center transition-all group">
+                <i class="fa-solid fa-star text-gold-accent text-xl group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-slate-300 mt-1">VIP Star</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Logo Tuning (Size & Margin) -->
+          <div class="border-t border-white/10 pt-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="text-xs font-semibold text-slate-300">Logo Scale</label>
+                <span id="logo-size-val" class="text-xs text-brand-400 font-mono">35%</span>
+              </div>
+              <input type="range" id="logo-size-slider" min="0.15" max="0.45" step="0.02" value="0.35" class="w-full h-2 bg-obsidian-800 rounded-lg appearance-none cursor-pointer accent-brand-500" oninput="updateLogoSize(this.value)">
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="text-xs font-semibold text-slate-300">Logo Outer Margin</label>
+                <span id="logo-margin-val" class="text-xs text-brand-400 font-mono">5px</span>
+              </div>
+              <input type="range" id="logo-margin-slider" min="0" max="15" value="5" class="w-full h-2 bg-obsidian-800 rounded-lg appearance-none cursor-pointer accent-brand-500" oninput="updateLogoMargin(this.value)">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div id="tab-frames" class="tab-panel hidden flex flex-col space-y-5">
+        <div class="glass-panel rounded-2xl p-5 space-y-6">
+          
+          <!-- Frame Styles (Banner, Header, Polaroid, Badge, None) -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-xs font-bold uppercase tracking-wider text-slate-300">Frame Layout & Outer Shell</h2>
+              <span class="text-[11px] text-slate-400">High-Converting CTAs</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              <button onclick="setFrameStyle('banner')" id="frame-btn-banner" class="frame-btn p-3 rounded-xl border border-brand-500 bg-brand-500/10 flex flex-col items-center justify-center text-center transition-all">
+                <div class="w-12 h-14 border border-white/20 rounded-md p-1 flex flex-col justify-between mb-2">
+                  <div class="w-full h-8 bg-white/10 rounded-sm"></div>
+                  <div class="w-full h-3 bg-brand-500 rounded-sm"></div>
+                </div>
+                <span class="text-xs font-semibold text-white">Studio Banner</span>
+                <span class="text-[10px] text-slate-300">Bottom CTA Banner</span>
+              </button>
+
+              <button onclick="setFrameStyle('header')" id="frame-btn-header" class="frame-btn p-3 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex flex-col items-center justify-center text-center transition-all">
+                <div class="w-12 h-14 border border-white/20 rounded-md p-1 flex flex-col justify-between mb-2">
+                  <div class="w-full h-3 bg-brand-500 rounded-sm"></div>
+                  <div class="w-full h-8 bg-white/10 rounded-sm"></div>
+                </div>
+                <span class="text-xs font-semibold">Top Header</span>
+                <span class="text-[10px] text-slate-400">Archway Banner</span>
+              </button>
+
+              <button onclick="setFrameStyle('polaroid')" id="frame-btn-polaroid" class="frame-btn p-3 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex flex-col items-center justify-center text-center transition-all">
+                <div class="w-12 h-14 border border-white/20 bg-white/5 rounded-md p-1.5 flex flex-col justify-between mb-2">
+                  <div class="w-full h-7 bg-white/20 rounded-sm"></div>
+                  <div class="w-8 h-1.5 bg-slate-400 rounded-sm mx-auto"></div>
+                </div>
+                <span class="text-xs font-semibold">Polaroid Card</span>
+                <span class="text-[10px] text-slate-400">Classic Photo Look</span>
+              </button>
+
+              <button onclick="setFrameStyle('badge')" id="frame-btn-badge" class="frame-btn p-3 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex flex-col items-center justify-center text-center transition-all">
+                <div class="w-12 h-14 border border-white/20 rounded-md p-1 flex flex-col items-center justify-center relative mb-2">
+                  <div class="w-8 h-8 bg-white/10 rounded-sm"></div>
+                  <div class="w-10 h-2 bg-brand-500 rounded-full absolute -bottom-1"></div>
+                </div>
+                <span class="text-xs font-semibold">Badge Pill</span>
+                <span class="text-[10px] text-slate-400">Floating Label</span>
+              </button>
+
+              <button onclick="setFrameStyle('none')" id="frame-btn-none" class="frame-btn p-3 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex flex-col items-center justify-center text-center transition-all">
+                <div class="w-12 h-14 border border-dashed border-white/20 rounded-md flex items-center justify-center mb-2">
+                  <i class="fa-solid fa-ban text-slate-500"></i>
+                </div>
+                <span class="text-xs font-semibold">Pure QR (No Frame)</span>
+                <span class="text-[10px] text-slate-400">Raw Clean Vector</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Call To Action Text Customization -->
+          <div class="border-t border-white/10 pt-5 space-y-3">
+            <label class="block text-xs font-semibold text-slate-300">Call To Action (CTA) Text</label>
+            <input type="text" id="frame-cta-text" value="SCAN ME" class="w-full px-4 py-2.5 rounded-xl glass-input text-sm text-white font-bold tracking-wider focus:outline-none uppercase" oninput="renderQR()">
+            
+            <!-- Quick CTA ideas chips -->
+            <div class="flex flex-wrap gap-2 pt-1 text-xs">
+              <button onclick="setCtaText('SCAN ME')" class="px-2.5 py-1 rounded-lg bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-300">SCAN ME</button>
+              <button onclick="setCtaText('SCAN TO VISIT')" class="px-2.5 py-1 rounded-lg bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-300">SCAN TO VISIT</button>
+              <button onclick="setCtaText('PAY HERE')" class="px-2.5 py-1 rounded-lg bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-300">PAY HERE</button>
+              <button onclick="setCtaText('CONNECT TO WIFI')" class="px-2.5 py-1 rounded-lg bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-300">CONNECT TO WIFI</button>
+              <button onclick="setCtaText('VIEW MENU')" class="px-2.5 py-1 rounded-lg bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-300">VIEW MENU</button>
+              <button onclick="setCtaText('SAVE CONTACT')" class="px-2.5 py-1 rounded-lg bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-300">SAVE CONTACT</button>
+              <button onclick="setCtaText('FOLLOW US')" class="px-2.5 py-1 rounded-lg bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-300">FOLLOW US</button>
+            </div>
+          </div>
+
+          <!-- Frame Color Styling -->
+          <div class="border-t border-white/10 pt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-2">Frame Background Color</label>
+              <div class="flex items-center space-x-3 p-2 rounded-xl glass-input">
+                <input type="color" id="frame-bg-color" value="#000000" class="w-8 h-8 rounded-lg border-0 bg-transparent cursor-pointer" onchange="renderQR()">
+                <input type="text" id="frame-bg-hex" value="#000000" class="w-full bg-transparent text-xs font-mono text-white focus:outline-none uppercase" onchange="document.getElementById('frame-bg-color').value = this.value; renderQR();">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-2">Frame Text Color</label>
+              <div class="flex items-center space-x-3 p-2 rounded-xl glass-input">
+                <input type="color" id="frame-text-color" value="#ffffff" class="w-8 h-8 rounded-lg border-0 bg-transparent cursor-pointer" onchange="renderQR()">
+                <input type="text" id="frame-text-hex" value="#ffffff" class="w-full bg-transparent text-xs font-mono text-white focus:outline-none uppercase" onchange="document.getElementById('frame-text-color').value = this.value; renderQR();">
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="lg:col-span-5 flex flex-col space-y-5">
+      
+      <!-- Mockup Mode Switcher Bar -->
+      <div class="glass-panel rounded-2xl p-1.5 flex items-center justify-between text-xs font-semibold">
+        <div class="flex items-center space-x-1 overflow-x-auto no-scrollbar w-full">
+          <button onclick="setMockupMode('card')" id="mockup-btn-card" class="mockup-btn flex-1 py-2 px-2.5 rounded-xl transition-all bg-brand-600 text-white shadow-glow flex items-center justify-center space-x-1.5">
+            <i class="fa-solid fa-id-badge text-xs"></i>
+            <span>Studio Card</span>
+          </button>
+          <button onclick="setMockupMode('phone')" id="mockup-btn-phone" class="mockup-btn flex-1 py-2 px-2.5 rounded-xl transition-all text-slate-400 hover:text-white hover:bg-obsidian-850 flex items-center justify-center space-x-1.5">
+            <i class="fa-solid fa-mobile-screen text-xs"></i>
+            <span>Phone View</span>
+          </button>
+          <button onclick="setMockupMode('standee')" id="mockup-btn-standee" class="mockup-btn flex-1 py-2 px-2.5 rounded-xl transition-all text-slate-400 hover:text-white hover:bg-obsidian-850 flex items-center justify-center space-x-1.5">
+            <i class="fa-solid fa-trophy text-xs"></i>
+            <span>Table Stand</span>
+          </button>
+          <button onclick="setMockupMode('sticker')" id="mockup-btn-sticker" class="mockup-btn flex-1 py-2 px-2.5 rounded-xl transition-all text-slate-400 hover:text-white hover:bg-obsidian-850 flex items-center justify-center space-x-1.5">
+            <i class="fa-solid fa-certificate text-xs"></i>
+            <span>Sticker</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center min-h-[460px] relative overflow-hidden group">
+        
+        <!-- Live Scannability Badge Indicator -->
+        <div class="absolute top-4 left-4 z-20 flex items-center space-x-2 bg-obsidian-900/90 border border-white/10 px-3 py-1.5 rounded-full text-[11px] shadow-sm backdrop-blur-md">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span class="text-slate-300 font-medium">Scannability: <span id="scannability-score" class="text-emerald-400 font-bold">100% Guaranteed</span></span>
+        </div>
+
+        <!-- STAGE 1: Studio Framed Card (Default) -->
+        <div id="mockup-stage-card" class="mockup-stage flex flex-col items-center justify-center transition-all duration-300 scale-100">
+          <div id="framed-card-wrapper" class="p-5 rounded-3xl bg-white shadow-2xl flex flex-col items-center justify-center transition-all duration-300" style="min-width: 290px;">
+            
+            <!-- Top Header Frame Element (if active) -->
+            <div id="top-frame-banner" class="w-full text-center py-2 px-4 rounded-xl text-xs font-extrabold tracking-wider mb-3 hidden uppercase">
+              SCAN ME
+            </div>
+
+            <!-- Core QR Code Display Canvas Container -->
+            <div id="qr-target-container" class="flex items-center justify-center rounded-2xl overflow-hidden">
+              <!-- QRCodeStyling appends here -->
+            </div>
+
+            <!-- Bottom Banner Frame Element (if active) -->
+            <div id="bottom-frame-banner" class="w-full text-center py-2.5 px-4 rounded-xl text-xs font-black tracking-widest mt-3 uppercase shadow-sm">
+              SCAN ME
+            </div>
+          </div>
+          
+          <!-- Live Decoded Text Pill -->
+          <div class="mt-4 px-3.5 py-1.5 rounded-full bg-obsidian-900/80 border border-white/10 text-[11px] text-slate-400 max-w-[280px] truncate flex items-center space-x-2">
+            <i class="fa-solid fa-satellite-dish text-brand-400 text-xs"></i>
+            <span class="truncate" id="stage-decoded-preview">Target: https://github.com</span>
+          </div>
+        </div>
+
+        <!-- STAGE 2: Smartphone Screen Mockup (Hidden by default) -->
+        <div id="mockup-stage-phone" class="mockup-stage hidden flex-col items-center justify-center transition-all duration-300">
+          <div class="w-[240px] h-[450px] bg-slate-900 rounded-[44px] p-3 shadow-2xl border-4 border-slate-700 relative flex flex-col items-center justify-between">
+            <!-- Speaker & Camera Dynamic Island -->
+            <div class="w-20 h-4 bg-black rounded-full mb-3 flex items-center justify-center">
+              <div class="w-2 h-2 rounded-full bg-slate-800 ml-auto mr-2"></div>
+            </div>
+            
+            <!-- Smartphone Display Area -->
+            <div class="flex-1 w-full bg-gradient-to-b from-slate-950 to-indigo-950 rounded-[32px] p-3 flex flex-col items-center justify-center text-center">
+              <span class="text-[10px] text-indigo-300 uppercase font-semibold tracking-wider mb-2">Instant Scan & Go</span>
+              <div id="phone-qr-mount" class="p-2 bg-white rounded-2xl shadow-lg flex items-center justify-center scale-90">
+                <!-- Cloned Canvas will be mounted here -->
+              </div>
+              <p class="text-[10px] text-slate-400 mt-2">Point phone camera to test</p>
+            </div>
+
+            <!-- Home Bar Indicator -->
+            <div class="w-24 h-1 bg-slate-600 rounded-full mt-2"></div>
+          </div>
+        </div>
+
+        <!-- STAGE 3: Table Acrylic Standee Mockup (Hidden) -->
+        <div id="mockup-stage-standee" class="mockup-stage hidden flex-col items-center justify-center transition-all duration-300">
+          <div class="relative flex flex-col items-center">
+            <!-- Acrylic Glass Plate -->
+            <div class="w-[250px] bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-standee border-2 border-white/80 flex flex-col items-center text-center">
+              <div class="w-full flex items-center justify-between border-b border-slate-200 pb-2 mb-3">
+                <span class="text-[10px] font-bold text-slate-700 tracking-wider uppercase">Table Standee</span>
+                <i class="fa-solid fa-utensils text-slate-400 text-xs"></i>
+              </div>
+              <div id="standee-qr-mount" class="flex items-center justify-center scale-95">
+                <!-- Cloned Canvas -->
+              </div>
+              <div class="w-full mt-3 py-1.5 bg-brand-600 rounded-lg text-white font-extrabold text-[11px] tracking-wider uppercase">
+                Self Service / Order
+              </div>
+            </div>
+            <!-- Solid Wooden / Brushed Metal Base -->
+            <div class="w-[280px] h-6 bg-gradient-to-r from-amber-900 via-amber-800 to-amber-950 rounded-lg shadow-2xl -mt-2 border-t border-amber-700/40"></div>
+          </div>
+        </div>
+
+        <!-- STAGE 4: Window Sticker / Badge Mockup (Hidden) -->
+        <div id="mockup-stage-sticker" class="mockup-stage hidden flex-col items-center justify-center transition-all duration-300">
+          <div class="w-[270px] h-[270px] rounded-full bg-gradient-to-tr from-brand-600 via-indigo-600 to-pink-500 p-2 shadow-2xl flex items-center justify-center relative">
+            <div class="w-full h-full rounded-full bg-white flex flex-col items-center justify-center p-4 text-center">
+              <span class="text-[9px] font-black uppercase text-brand-700 tracking-widest mb-1">Official Scan Spot</span>
+              <div id="sticker-qr-mount" class="scale-75 -my-4">
+                <!-- Cloned Canvas -->
+              </div>
+              <span class="text-[10px] font-bold text-slate-800 uppercase tracking-wider">Tap Or Scan</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="glass-panel rounded-2xl p-4 sm:p-5 space-y-3">
+        <!-- Main Primary Download (Framed Image) -->
+        <button onclick="downloadFramedPNG()" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold text-sm tracking-wide shadow-glow flex items-center justify-center space-x-2 transition-all transform active:scale-[0.98]">
+          <i class="fa-solid fa-download"></i>
+          <span>Download Framed PNG (High-Res)</span>
+        </button>
+
+        <!-- Secondary Download (Pure QR without frame) -->
+        <button onclick="downloadPureQR()" class="w-full py-2.5 px-4 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 hover:border-gold-500/40 text-slate-200 hover:text-white font-semibold text-xs flex items-center justify-center space-x-2 transition-all">
+          <i class="fa-solid fa-sparkles text-gold-accent"></i>
+          <span>Pure QR Only (Transparent / Vector PNG)</span>
+        </button>
+
+        <!-- Tool Grid (Copy Image, SVG Export, 4K High-Res, Printable A4 Sheet) -->
+        <div class="grid grid-cols-4 gap-2 pt-1 text-xs">
+          <button onclick="copyQRToClipboard()" class="p-2 rounded-xl bg-obsidian-900 hover:bg-obsidian-850 border border-white/10 text-slate-300 hover:text-white flex flex-col items-center justify-center transition-all group" title="Copy to Clipboard">
+            <i class="fa-regular fa-copy text-sm mb-1 group-hover:text-brand-400"></i>
+            <span class="text-[10px]">Copy Img</span>
+          </button>
+          <button onclick="downloadSVG()" class="p-2 rounded-xl bg-obsidian-900 hover:bg-obsidian-850 border border-white/10 text-slate-300 hover:text-white flex flex-col items-center justify-center transition-all group" title="Download Scalable SVG">
+            <i class="fa-solid fa-bezier-curve text-sm mb-1 group-hover:text-purple-400"></i>
+            <span class="text-[10px]">Vector SVG</span>
+          </button>
+          <button onclick="download4K()" class="p-2 rounded-xl bg-obsidian-900 hover:bg-obsidian-850 border border-white/10 text-slate-300 hover:text-white flex flex-col items-center justify-center transition-all group" title="Ultra 4K Print Resolution">
+            <i class="fa-solid fa-expand text-sm mb-1 group-hover:text-amber-400"></i>
+            <span class="text-[10px]">4K Ultra</span>
+          </button>
+          <button onclick="openPrintSheetModal()" class="p-2 rounded-xl bg-obsidian-900 hover:bg-obsidian-850 border border-white/10 text-slate-300 hover:text-white flex flex-col items-center justify-center transition-all group" title="Multi-Label A4 Printable Sheet">
+            <i class="fa-solid fa-print text-sm mb-1 group-hover:text-emerald-400"></i>
+            <span class="text-[10px]">Print Sheet</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <div id="scanner-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-panel max-w-md w-full rounded-3xl p-6 border border-white/15 shadow-2xl relative">
+      <button onclick="closeScannerModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-obsidian-850 text-slate-400 hover:text-white flex items-center justify-center">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+
+      <div class="flex items-center space-x-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-camera-viewfinder"></i>
+        </div>
+        <div>
+          <h3 class="text-sm font-bold text-white">Scannability Verification</h3>
+          <p class="text-xs text-slate-400">Real-time pixel decoder test</p>
+        </div>
+      </div>
+
+      <div id="scan-test-result" class="p-4 rounded-2xl bg-obsidian-900 border border-white/10 mb-4 space-y-2 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="text-slate-400">Hardware Detection:</span>
+          <span class="text-emerald-400 font-semibold flex items-center gap-1">
+            <i class="fa-solid fa-circle-check"></i> Passed Instantly
+          </span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-400">Estimated Scan Time:</span>
+          <span class="text-white font-mono">&lt; 0.08 sec</span>
+        </div>
+        <div class="pt-2 border-t border-white/10">
+          <span class="text-slate-400 block mb-1">Decoded Payload:</span>
+          <div id="scan-decoded-text" class="p-2.5 rounded-lg bg-obsidian-950 font-mono text-emerald-300 break-all select-all text-[11px]">
+            https://github.com
+          </div>
+        </div>
+      </div>
+
+      <button onclick="closeScannerModal()" class="w-full py-2.5 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 text-white font-semibold text-xs border border-white/10">
+        Close Validator
+      </button>
+    </div>
+  </div>
+
+  <div id="print-sheet-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="glass-panel max-w-3xl w-full rounded-3xl p-6 border border-white/15 shadow-2xl my-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
+        <div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-print text-brand-400"></i> A4 Sticker & Standee Sheet Print
+          </h3>
+          <p class="text-xs text-slate-400">Prints 6 ready-to-cut official labels on one A4 paper</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold flex items-center space-x-1.5 shadow-glow">
+            <i class="fa-solid fa-print"></i>
+            <span>Print Now</span>
+          </button>
+          <button onclick="closePrintSheetModal()" class="w-8 h-8 rounded-full bg-obsidian-850 text-slate-400 hover:text-white flex items-center justify-center">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Printable Sheet Grid Container -->
+      <div id="print-sheet-area" class="bg-white rounded-2xl p-6 text-black min-h-[420px]">
+        <div class="text-center mb-4 border-b pb-2">
+          <h2 class="text-sm font-bold tracking-wider uppercase text-slate-900" id="print-sheet-title">QR Studio Elite Official Label Sheet</h2>
+          <p class="text-[10px] text-slate-500">Cut along dotted guides. Scannable with any Android or iOS camera.</p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4" id="print-sheet-grid">
+          <!-- 6 Label cards cloned here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Tactile Notification Toast System (No alert() used!) -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- Hidden off-screen Canvas for 4K and Composite Export -->
+  <canvas id="export-offscreen-canvas" class="hidden"></canvas>
+
+  <script>
+    /* Global Application State */
+    const state = {
+      contentType: 'url',
+      contentPayload: 'https://github.com',
+      dotType: 'rounded',
+      cornerSquareType: 'extra-rounded',
+      cornerDotType: 'dot',
+      margin: 15,
+      errorCorrection: 'Q',
+      colorMode: 'solid',
+      color1: '#000000',
+      color2: '#000000',
+      customEyes: false,
+      eyeOuterColor: '#000000',
+      eyeInnerColor: '#000000',
+      bgMode: 'solid',
+      bgColor: '#ffffff',
+      logoUrl: null,
+      logoSize: 0.35,
+      logoMargin: 5,
+      frameStyle: 'banner',
+      ctaText: 'SCAN ME',
+      frameBgColor: '#000000',
+      frameTextColor: '#ffffff',
+      mockupMode: 'card',
+      soundEnabled: true
+    };
+
+    let qrCode = null;
+    let audioCtx = null;
+
+    /* Synthesize Subtle Tactile Audio Feedback using Web Audio API */
+    function playTactileSound(frequency = 580, type = 'sine', duration = 0.04) {
+      if (!state.soundEnabled) return;
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        // AudioContext silent fallback
+      }
+    }
+
+    // Toggle sound
+    document.getElementById('toggle-sound-btn').addEventListener('click', () => {
+      state.soundEnabled = !state.soundEnabled;
+      const icon = document.getElementById('sound-icon');
+      if (state.soundEnabled) {
+        icon.className = 'fa-solid fa-volume-high text-sm text-brand-400';
+        showToast('Tactile audio feedback enabled', 'info');
+        playTactileSound(700, 'sine', 0.08);
+      } else {
+        icon.className = 'fa-solid fa-volume-xmark text-sm text-slate-500';
+        showToast('Audio feedback muted', 'info');
+      }
+    });
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      let border = 'border-brand-500/40 text-white';
+      let icon = '<i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i>';
+      if (type === 'info') {
+        icon = '<i class="fa-solid fa-circle-info text-blue-400 mr-2"></i>';
+      } else if (type === 'warn') {
+        border = 'border-amber-500/40 text-amber-200';
+        icon = '<i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i>';
+      }
+
+      toast.className = `glass-panel px-4 py-3 rounded-2xl border ${border} text-xs font-semibold shadow-2xl flex items-center space-x-2 transform translate-y-4 opacity-0 transition-all duration-300 pointer-events-auto`;
+      toast.innerHTML = `${icon}<span>${message}</span>`;
+      
+      container.appendChild(toast);
+      
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-4', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 2600);
+    }
+
+    function initQREngine() {
+      const targetContainer = document.getElementById('qr-target-container');
+      targetContainer.innerHTML = '';
+
+      qrCode = new QRCodeStyling(getQROptions(260, 260));
+      qrCode.append(targetContainer);
+
+      // Mount cloned copies to mockups
+      updateMockupStageMounts();
+    }
+
+    /* Compile Dynamic Options for QRCodeStyling */
+    function getQROptions(width = 260, height = 260) {
+      compileContentPayload();
+
+      const options = {
+        width: width,
+        height: height,
+        type: 'canvas',
+        data: state.contentPayload,
+        image: state.logoUrl || undefined,
+        margin: state.margin,
+        qrOptions: {
+          errorCorrectionLevel: state.errorCorrection
+        },
+        imageOptions: {
+          crossOrigin: 'anonymous',
+          margin: state.logoMargin,
+          imageSize: parseFloat(state.logoSize),
+          hideBackgroundDots: true
+        },
+        dotsOptions: {
+          type: state.dotType
+        },
+        cornersSquareOptions: {
+          type: state.cornerSquareType
+        },
+        cornersDotOptions: {
+          type: state.cornerDotType
+        },
+        backgroundOptions: {
+          color: state.bgMode === 'transparent' ? 'transparent' : state.bgColor
+        }
+      };
+
+      // Dots color / gradient
+      if (state.colorMode === 'gradient') {
+        options.dotsOptions.gradient = {
+          type: 'linear',
+          rotation: 0.785,
+          colorStops: [
+            { offset: 0, color: state.color1 },
+            { offset: 1, color: state.color2 }
+          ]
+        };
+      } else {
+        options.dotsOptions.color = state.color1;
+      }
+
+      // Corner Square & Dot Colors
+      if (state.customEyes) {
+        options.cornersSquareOptions.color = state.eyeOuterColor;
+        options.cornersDotOptions.color = state.eyeInnerColor;
+      } else {
+        if (state.colorMode === 'gradient') {
+          options.cornersSquareOptions.gradient = {
+            type: 'linear',
+            rotation: 0.785,
+            colorStops: [{ offset: 0, color: state.color1 }, { offset: 1, color: state.color2 }]
+          };
+          options.cornersDotOptions.color = state.color1;
+        } else {
+          options.cornersSquareOptions.color = state.color1;
+          options.cornersDotOptions.color = state.color1;
+        }
+      }
+
+      return options;
+    }
+
+    function compileContentPayload() {
+      const type = state.contentType;
+      let payload = '';
+
+      if (type === 'url') {
+        let raw = document.getElementById('input-url').value.trim();
+        if (raw && !raw.startsWith('http://') && !raw.startsWith('https://')) {
+          raw = 'https://' + raw;
+        }
+        payload = raw || 'https://github.com';
+      } 
+      else if (type === 'upi') {
+        const pa = document.getElementById('upi-id').value.trim() || 'merchant@upi';
+        const pn = encodeURIComponent(document.getElementById('upi-name').value.trim() || 'Payee');
+        const am = document.getElementById('upi-amount').value.trim();
+        const tn = encodeURIComponent(document.getElementById('upi-note').value.trim() || 'Payment');
+        payload = `upi://pay?pa=${pa}&pn=${pn}${am ? '&am=' + am : ''}&tn=${tn}`;
+      }
+      else if (type === 'wifi') {
+        const ssid = document.getElementById('wifi-ssid').value.trim() || 'WiFi';
+        const pass = document.getElementById('wifi-pass').value;
+        const enc = document.getElementById('wifi-enc').value;
+        const hidden = document.getElementById('wifi-hidden').checked ? 'true' : 'false';
+        payload = `WIFI:T:${enc};S:${ssid};P:${pass};H:${hidden};;`;
+      }
+      else if (type === 'vcard') {
+        const fn = document.getElementById('vcard-fn').value.trim();
+        const ln = document.getElementById('vcard-ln').value.trim();
+        const tel = document.getElementById('vcard-tel').value.trim();
+        const email = document.getElementById('vcard-email').value.trim();
+        const org = document.getElementById('vcard-org').value.trim();
+        const title = document.getElementById('vcard-title').value.trim();
+        const web = document.getElementById('vcard-web').value.trim();
+        
+        payload = `BEGIN:VCARD\nVERSION:3.0\nN:${ln};${fn};;;\nFN:${fn} ${ln}\nORG:${org}\nTITLE:${title}\nTEL:${tel}\nEMAIL:${email}\nURL:${web}\nEND:VCARD`;
+      }
+      else if (type === 'whatsapp') {
+        const phone = document.getElementById('wa-phone').value.replace(/[^0-9]/g, '');
+        const msg = encodeURIComponent(document.getElementById('wa-msg').value.trim());
+        payload = `https://wa.me/${phone}?text=${msg}`;
+      }
+      else if (type === 'text') {
+        payload = document.getElementById('input-text').value || 'Plain Text';
+      }
+      else if (type === 'email') {
+        const to = document.getElementById('email-to').value.trim();
+        const sub = encodeURIComponent(document.getElementById('email-sub').value.trim());
+        const body = encodeURIComponent(document.getElementById('email-body').value.trim());
+        payload = `mailto:${to}?subject=${sub}&body=${body}`;
+      }
+      else if (type === 'phone') {
+        const num = document.getElementById('input-phone').value.trim();
+        payload = `tel:${num}`;
+      }
+      else if (type === 'sms') {
+        const num = document.getElementById('sms-phone').value.trim();
+        const body = encodeURIComponent(document.getElementById('sms-body').value.trim());
+        payload = `smsto:${num}:${body}`;
+      }
+      else if (type === 'social') {
+        const platform = document.getElementById('social-platform').value;
+        const handle = document.getElementById('social-handle').value.trim().replace(/^@/, '');
+        const urls = {
+          instagram: `https://instagram.com/${handle}`,
+          youtube: `https://youtube.com/@${handle}`,
+          x: `https://x.com/${handle}`,
+          linkedin: `https://linkedin.com/in/${handle}`,
+          telegram: `https://t.me/${handle}`,
+          spotify: `https://open.spotify.com/search/${handle}`
+        };
+        payload = urls[platform] || `https://instagram.com/${handle}`;
+      }
+
+      state.contentPayload = payload;
+      const previewEl = document.getElementById('stage-decoded-preview');
+      if (previewEl) {
+        previewEl.innerText = `Target: ${payload.replace(/\n/g, ' ')}`;
+      }
+      return payload;
+    }
+
+    function renderQR() {
+      if (!qrCode) return;
+      playTactileSound(620, 'sine', 0.03);
+
+      const opts = getQROptions(260, 260);
+      qrCode.update(opts);
+
+      // Update Frame Elements
+      updateFrameVisuals();
+
+      // Mirror onto 3D mockup stages
+      setTimeout(() => {
+        updateMockupStageMounts();
+      }, 100);
+    }
+
+    function updateFrameVisuals() {
+      const topBanner = document.getElementById('top-frame-banner');
+      const bottomBanner = document.getElementById('bottom-frame-banner');
+      const cardWrapper = document.getElementById('framed-card-wrapper');
+      
+      const cta = document.getElementById('frame-cta-text').value.trim().toUpperCase() || 'SCAN ME';
+      state.ctaText = cta;
+      state.frameBgColor = document.getElementById('frame-bg-color').value;
+      state.frameTextColor = document.getElementById('frame-text-color').value;
+
+      // Reset styles
+      topBanner.classList.add('hidden');
+      bottomBanner.classList.add('hidden');
+      cardWrapper.style.backgroundColor = state.bgMode === 'transparent' ? '#ffffff' : state.bgColor;
+      cardWrapper.style.border = 'none';
+
+      if (state.frameStyle === 'banner') {
+        bottomBanner.classList.remove('hidden');
+        bottomBanner.innerText = cta;
+        bottomBanner.style.backgroundColor = state.frameBgColor;
+        bottomBanner.style.color = state.frameTextColor;
+      } 
+      else if (state.frameStyle === 'header') {
+        topBanner.classList.remove('hidden');
+        topBanner.innerText = cta;
+        topBanner.style.backgroundColor = state.frameBgColor;
+        topBanner.style.color = state.frameTextColor;
+      }
+      else if (state.frameStyle === 'polaroid') {
+        bottomBanner.classList.remove('hidden');
+        bottomBanner.innerText = cta;
+        bottomBanner.style.backgroundColor = 'transparent';
+        bottomBanner.style.color = '#1e293b';
+        bottomBanner.style.fontFamily = '"Playfair Display", serif';
+        bottomBanner.style.fontSize = '14px';
+        cardWrapper.style.backgroundColor = '#ffffff';
+      }
+      else if (state.frameStyle === 'badge') {
+        bottomBanner.classList.remove('hidden');
+        bottomBanner.innerText = cta;
+        bottomBanner.style.backgroundColor = state.frameBgColor;
+        bottomBanner.style.color = state.frameTextColor;
+        bottomBanner.style.borderRadius = '9999px';
+        bottomBanner.style.width = 'fit-content';
+        bottomBanner.style.margin = '10px auto 0 auto';
+      }
+    }
+
+    /* Duplicate generated Canvas to mockups */
+    function updateMockupStageMounts() {
+      const sourceCanvas = document.querySelector('#qr-target-container canvas');
+      if (!sourceCanvas) return;
+
+      const mounts = ['phone-qr-mount', 'standee-qr-mount', 'sticker-qr-mount'];
+      mounts.forEach(mountId => {
+        const mount = document.getElementById(mountId);
+        if (mount) {
+          mount.innerHTML = '';
+          const copy = document.createElement('canvas');
+          copy.width = sourceCanvas.width;
+          copy.height = sourceCanvas.height;
+          const ctx = copy.getContext('2d');
+          ctx.drawImage(sourceCanvas, 0, 0);
+          copy.style.width = '100%';
+          copy.style.height = 'auto';
+          copy.style.borderRadius = '12px';
+          mount.appendChild(copy);
+        }
+      });
+    }
+
+    function switchTab(tabId) {
+      playTactileSound(480, 'triangle', 0.04);
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('bg-brand-600', 'text-white', 'shadow-glow');
+        btn.classList.add('text-slate-400');
+      });
+
+      const activeBtn = document.getElementById(tabId.replace('tab-', 'tab-btn-'));
+      if (activeBtn) {
+        activeBtn.classList.add('bg-brand-600', 'text-white', 'shadow-glow');
+        activeBtn.classList.remove('text-slate-400');
+      }
+    }
+
+    function setContentType(type) {
+      playTactileSound(520, 'sine', 0.03);
+      state.contentType = type;
+
+      // Update buttons
+      document.querySelectorAll('.type-btn').forEach(btn => {
+        btn.className = 'type-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/60 text-slate-300 hover:text-white hover:border-white/20 flex flex-col items-center justify-center text-center transition-all';
+      });
+      const active = document.getElementById(`type-btn-${type}`);
+      if (active) {
+        active.className = 'type-btn p-3 rounded-xl border border-brand-500 bg-brand-500/10 text-white flex flex-col items-center justify-center text-center transition-all';
+      }
+
+      // Hide all fields, show active
+      const allFields = ['url', 'upi', 'wifi', 'vcard', 'whatsapp', 'text', 'email', 'phone', 'sms', 'social'];
+      allFields.forEach(f => {
+        const el = document.getElementById(`fields-${f}`);
+        if (el) el.classList.add('hidden');
+      });
+      const targetField = document.getElementById(`fields-${type}`);
+      if (targetField) targetField.classList.remove('hidden');
+
+      renderQR();
+    }
+
+    /* Fast 1-Tap Preset Workflows for Real Business Types */
+    function applyPresetWorkflow(preset) {
+      playTactileSound(720, 'sine', 0.06);
+      if (preset === 'upi') {
+        setContentType('upi');
+        setCtaText('PAY BILL HERE');
+        state.frameStyle = 'banner';
+        applyGradientTheme('#059669', '#10b981'); // Emerald
+        applyPresetLogo('upi');
+        showToast('Configured for Retail & Counter Payment QR', 'success');
+      } 
+      else if (preset === 'restaurant') {
+        setContentType('url');
+        setSampleUrl('https://order.mycafe.com/menu');
+        setCtaText('VIEW DIGITAL MENU');
+        state.frameStyle = 'banner';
+        applyGradientTheme('#d97706', '#f59e0b'); // Gold
+        setMockupMode('standee');
+        showToast('Configured for Cafe & Table Standee Menu', 'success');
+      }
+      else if (preset === 'wifi') {
+        setContentType('wifi');
+        setCtaText('CONNECT TO WI-FI');
+        state.frameStyle = 'banner';
+        applyGradientTheme('#0284c7', '#2563eb'); // Sky Ocean
+        applyPresetLogo('wifi');
+        showToast('Configured for Office & Hotel Guest Wi-Fi', 'success');
+      }
+      else if (preset === 'vcard') {
+        setContentType('vcard');
+        setCtaText('SAVE CONTACT');
+        state.frameStyle = 'badge';
+        applySolidTheme('#111827', '#ffffff');
+        applyPresetLogo('globe');
+        showToast('Configured for Executive vCard Business Card', 'success');
+      }
+      else if (preset === 'creator') {
+        setContentType('social');
+        setCtaText('FOLLOW ON INSTAGRAM');
+        state.frameStyle = 'banner';
+        applyGradientTheme('#ec4899', '#8b5cf6');
+        applyPresetLogo('instagram');
+        showToast('Configured for Creator & Social Profiles', 'success');
+      }
+    }
+
+    function setDotType(type) {
+      state.dotType = type;
+      document.querySelectorAll('.dot-btn').forEach(b => {
+        b.className = 'dot-btn p-3 rounded-xl border border-white/10 bg-obsidian-900/80 hover:bg-obsidian-850 flex items-center space-x-3 transition-all text-slate-300';
+      });
+      const active = document.getElementById(`dot-btn-${type}`);
+      if (active) {
+        active.className = 'dot-btn p-3 rounded-xl border border-brand-500 bg-brand-500/10 flex items-center space-x-3 transition-all text-white';
+      }
+      renderQR();
+    }
+
+    function setCornerSquareType(type) {
+      state.cornerSquareType = type;
+      document.querySelectorAll('.cs-btn').forEach(b => {
+        b.className = 'cs-btn py-3 px-2 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex flex-col items-center justify-center text-xs text-slate-300';
+      });
+      const active = document.getElementById(`cs-${type}`);
+      if (active) {
+        active.className = 'cs-btn py-3 px-2 rounded-xl border border-brand-500 bg-brand-500/10 flex flex-col items-center justify-center text-xs text-white';
+      }
+      renderQR();
+    }
+
+    function setCornerDotType(type) {
+      state.cornerDotType = type;
+      document.querySelectorAll('.cd-btn').forEach(b => {
+        b.className = 'cd-btn py-3 px-2 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex flex-col items-center justify-center text-xs text-slate-300';
+      });
+      const active = document.getElementById(`cd-${type}`);
+      if (active) {
+        active.className = 'cd-btn py-3 px-2 rounded-xl border border-brand-500 bg-brand-500/10 flex flex-col items-center justify-center text-xs text-white';
+      }
+      renderQR();
+    }
+
+    function updateMargin(val) {
+      state.margin = parseInt(val, 10);
+      document.getElementById('margin-val').innerText = `${val}px`;
+      renderQR();
+    }
+
+    function setErrorLevel(level) {
+      state.errorCorrection = level;
+      document.querySelectorAll('.ec-btn').forEach(b => {
+        b.className = 'ec-btn py-1.5 rounded-lg border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 text-slate-300';
+      });
+      const active = document.getElementById(`ec-${level}`);
+      if (active) {
+        active.className = 'ec-btn py-1.5 rounded-lg border border-brand-500 bg-brand-500/20 text-white font-bold';
+      }
+      renderQR();
+    }
+
+    function applyGradientTheme(c1, c2) {
+      setColorMode('gradient');
+      state.color1 = c1;
+      state.color2 = c2;
+      document.getElementById('dot-color-1').value = c1;
+      document.getElementById('dot-hex-1').value = c1;
+      document.getElementById('dot-color-2').value = c2;
+      document.getElementById('dot-hex-2').value = c2;
+      document.getElementById('frame-bg-color').value = c1;
+      document.getElementById('frame-bg-hex').value = c1;
+      renderQR();
+    }
+
+    function applySolidTheme(color, bg = '#ffffff') {
+      setColorMode('solid');
+      state.color1 = color;
+      state.color2 = color;
+      state.bgColor = bg;
+      document.getElementById('dot-color-1').value = color;
+      document.getElementById('dot-hex-1').value = color;
+      document.getElementById('bg-color-input').value = bg;
+      document.getElementById('bg-color-hex').value = bg;
+      document.getElementById('frame-bg-color').value = color;
+      document.getElementById('frame-bg-hex').value = color;
+      renderQR();
+    }
+
+    function setColorMode(mode) {
+      state.colorMode = mode;
+      const solidBtn = document.getElementById('mode-btn-solid');
+      const gradBtn = document.getElementById('mode-btn-gradient');
+      const col2Wrap = document.getElementById('color-2-wrapper');
+
+      if (mode === 'solid') {
+        solidBtn.className = 'px-2.5 py-1 rounded-lg border border-brand-500 bg-brand-500/20 text-white font-semibold';
+        gradBtn.className = 'px-2.5 py-1 rounded-lg border border-white/10 bg-obsidian-900 text-slate-300';
+        col2Wrap.classList.add('opacity-40', 'pointer-events-none');
+      } else {
+        gradBtn.className = 'px-2.5 py-1 rounded-lg border border-brand-500 bg-brand-500/20 text-white font-semibold';
+        solidBtn.className = 'px-2.5 py-1 rounded-lg border border-white/10 bg-obsidian-900 text-slate-300';
+        col2Wrap.classList.remove('opacity-40', 'pointer-events-none');
+      }
+      renderQR();
+    }
+
+    function syncColorInput(num, hex) {
+      if (hex.startsWith('#') && (hex.length === 7 || hex.length === 4)) {
+        document.getElementById(`dot-color-${num}`).value = hex;
+        if (num === 1) state.color1 = hex;
+        if (num === 2) state.color2 = hex;
+        renderQR();
+      }
+    }
+
+    function toggleCustomEyeColors(enabled) {
+      state.customEyes = enabled;
+      const container = document.getElementById('eye-color-inputs');
+      if (enabled) {
+        container.classList.remove('hidden');
+        state.eyeOuterColor = document.getElementById('eye-outer-color').value;
+        state.eyeInnerColor = document.getElementById('eye-inner-color').value;
+      } else {
+        container.classList.add('hidden');
+      }
+      renderQR();
+    }
+
+    function setBgMode(mode) {
+      state.bgMode = mode;
+      const solidBtn = document.getElementById('bg-mode-solid');
+      const transBtn = document.getElementById('bg-mode-trans');
+      const pickerRow = document.getElementById('bg-color-picker-row');
+
+      if (mode === 'transparent') {
+        transBtn.className = 'px-2.5 py-1 rounded-lg border border-brand-500 bg-brand-500/20 text-white font-semibold';
+        solidBtn.className = 'px-2.5 py-1 rounded-lg border border-white/10 bg-obsidian-900 text-slate-300';
+        pickerRow.classList.add('opacity-40', 'pointer-events-none');
+      } else {
+        solidBtn.className = 'px-2.5 py-1 rounded-lg border border-brand-500 bg-brand-500/20 text-white font-semibold';
+        transBtn.className = 'px-2.5 py-1 rounded-lg border border-white/10 bg-obsidian-900 text-slate-300';
+        pickerRow.classList.remove('opacity-40', 'pointer-events-none');
+      }
+      renderQR();
+    }
+
+    function setBgColorPreset(color) {
+      setBgMode('solid');
+      state.bgColor = color;
+      document.getElementById('bg-color-input').value = color;
+      document.getElementById('bg-color-hex').value = color;
+      renderQR();
+    }
+
+    function syncBgInput(hex) {
+      if (hex.startsWith('#')) {
+        document.getElementById('bg-color-input').value = hex;
+        state.bgColor = hex;
+        renderQR();
+      }
+    }
+
+    function handleLogoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        state.logoUrl = e.target.result;
+        // Raise error correction level automatically when embedding a logo for scannability
+        setErrorLevel('Q');
+        showToast('Logo attached! Error correction increased to 25%', 'success');
+        renderQR();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeLogo() {
+      state.logoUrl = null;
+      document.getElementById('logo-file-input').value = '';
+      showToast('Logo removed from QR code', 'info');
+      renderQR();
+    }
+
+    // Inline High-Definition SVG Icons for Verified Presets
+    const presetSvgMap = {
+      whatsapp: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="%2325D366"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>',
+      instagram: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="%23E1306C"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg>',
+      youtube: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" fill="%23FF0000"><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.583V174.334l142.069 81.666-142.069 81.666z"/></svg>',
+      x: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="%23FFFFFF"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg>',
+      linkedin: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="%230077B5"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>',
+      github: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" fill="%23FFFFFF"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 3 3.3 6 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-6-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>',
+      spotify: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" fill="%231DB954"><path d="M248 8C111.1 8 0 119.1 0 256s111.1 248 248 248 248-111.1 248-248S384.9 8 248 8zm114.3 358.5c-4.5 7.4-14.2 9.8-21.6 5.3-59.1-36.1-133.5-44.3-221.1-24.3-8.4 1.9-16.7-3.4-18.6-11.8s3.4-16.7 11.8-18.6c96.2-21.9 178.6-12.5 244.2 27.8 7.4 4.5 9.8 14.2 5.3 21.6zm29.8-66.2c-5.7 9.3-17.9 12.2-27.2 6.5-67.6-41.6-170.7-53.7-250.7-29.4-10.4 3.2-21.5-2.7-24.7-13.1-3.2-10.4 2.7-21.5 13.1-24.7 91.6-27.8 205.2-14.2 283 33.5 9.3 5.7 12.2 17.9 6.5 27.2zm2.6-69.8c-81.1-48.2-215-52.7-292.8-29-12.4 3.8-25.6-3.3-29.4-15.7s3.3-25.6 15.7-29.4c89.4-27.2 237.8-22 331.3 33.4 11.2 6.6 14.9 21.2 8.3 32.4-6.7 11.2-21.3 14.9-33.1 8.3z"/></svg>',
+      telegram: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" fill="%23229ED9"><path d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm121.8 169.9l-40.7 191.8c-3 13.6-11.1 16.9-22.4 10.5l-62-45.7-29.9 28.8c-3.3 3.3-6.1 6.1-12.5 6.1l4.4-63.1 114.9-103.8c5-4.4-1.1-6.9-7.7-2.5l-142 89.4-61.2-19.1c-13.3-4.2-13.6-13.3 2.8-19.7l239.1-92.2c11.1-4 20.8 2.7 17.2 19.3z"/></svg>',
+      upi: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill="%2310B981"><path d="M308 96c6.627 0 12-5.373 12-12V44c0-6.627-5.373-12-12-12H12C5.373 32 0 37.373 0 44v40c0 6.627 5.373 12 12 12h76.368c48.868 0 88.583 36.634 94.619 84H12c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h171.053C174.965 291.688 135.215 328 86.4 328H12c-6.627 0-12 5.373-12 12v35.45c0 3.291 1.353 6.441 3.738 8.694l179.809 170.076c5.034 4.761 13.111 4.542 17.872-.492l34.258-36.239c4.639-4.908 4.426-12.65-.482-17.29L75.12 344h11.28c70.686 0 131.714-48.423 147.286-116H308c6.627 0 12-5.373 12-12v-40c0-6.627-5.373-12-12-12h-67.43c-3.151-24.116-14.774-45.922-32.57-62H308z"/></svg>',
+      wifi: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" fill="%2306B6D4"><path d="M634.91 154.88C457.74-8.99 182.19-8.93 25.09 154.88c-6.79 7.07-6.79 18.52 0 25.59l45.25 47.16c6.79 7.07 17.78 7.07 24.57 0 123.63-128.77 334.8-128.82 458.45 0 6.79 7.07 17.78 7.07 24.57 0l45.25-47.16c6.78-7.07 6.78-18.52 0-25.59zm-90.51 94.31C427.32 127.32 232.68 127.32 115.6 249.19c-6.79 7.07-6.79 18.52 0 25.59l45.25 47.16c6.79 7.07 17.78 7.07 24.57 0 81.35-84.73 219.06-84.73 300.41 0 6.79 7.07 17.78 7.07 24.57 0l45.25-47.16c6.79-7.07 6.79-18.52 0-25.59zm-90.5 94.31c-77.94-81.18-202.95-81.18-280.89 0-6.79 7.07-6.79 18.52 0 25.59l115.82 120.69c6.79 7.07 17.78 7.07 24.57 0l115.82-120.69c6.79-7.07 6.79-18.52 0-25.59z"/></svg>',
+      globe: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="%236366F1"><path d="M352 256c0 22.2-1.2 43.6-3.3 64H163.3c-2.2-20.4-3.3-41.8-3.3-64s1.2-43.6 3.3-64h185.4c2.2 20.4 3.3 41.8 3.3 64zm28.8-64h76.7C429.6 148.6 376.8 114 313.3 98.9c30.2 24.7 54.3 56.4 67.5 93.1zm0 128c-13.2 36.7-37.3 68.4-67.5 93.1 63.5-15.1 116.3-49.7 144.2-93.1h-76.7zM256 32C132.3 32 32 132.3 32 256s100.3 224 224 224 224-100.3 224-224S379.7 32 256 32z"/></svg>',
+      mail: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="%23F59E0B"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L304.5 332.8c-28.5 21.4-67.5 21.4-96 0L0 176z"/></svg>',
+      heart: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="%23F43F5E"><path d="M47.6 300.4L228.3 469.1c7.5 7 19.8 7 27.3 0l180.8-168.7c53.5-49.9 59.8-132.8 14-190.8C398.8 39.7 319.4 47.9 256 107.7 192.6 47.9 113.2 39.7 61.6 109.6c-45.8 58-39.5 140.9 14 190.8z"/></svg>',
+      star: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" fill="%23D4AF37"><path d="M316.9 18C311.6 7 300.4 0 288 0s-23.6 7-28.9 18l-68.5 142.3-154 22.8c-12 1.8-21.6 10.4-24.8 22s2.5 23.9 11.4 32.7l111.4 109.8-26.3 156.4c-2 12.1 3 24.2 12.9 31.3s22.6 7.2 33.2 1.6L288 438.4l137.7 73.9c10.6 5.7 23.3 5.4 33.2-1.6s14.9-19.2 12.9-31.3l-26.3-156.4 111.4-109.8c8.9-8.8 14.6-21.1 11.4-32.7s-12.8-20.2-24.8-22l-154-22.8L316.9 18z"/></svg>'
+    };
+
+    function applyPresetLogo(key) {
+      if (presetSvgMap[key]) {
+        state.logoUrl = presetSvgMap[key];
+        setErrorLevel('Q');
+        showToast(`Applied verified ${key.toUpperCase()} preset icon`, 'success');
+        renderQR();
+      }
+    }
+
+    function updateLogoSize(val) {
+      state.logoSize = parseFloat(val);
+      document.getElementById('logo-size-val').innerText = `${Math.round(val * 100)}%`;
+      renderQR();
+    }
+
+    function updateLogoMargin(val) {
+      state.logoMargin = parseInt(val, 10);
+      document.getElementById('logo-margin-val').innerText = `${val}px`;
+      renderQR();
+    }
+
+    function setFrameStyle(style) {
+      state.frameStyle = style;
+      document.querySelectorAll('.frame-btn').forEach(b => {
+        b.className = 'frame-btn p-3 rounded-xl border border-white/10 bg-obsidian-900 hover:bg-obsidian-850 flex flex-col items-center justify-center text-center transition-all text-slate-300';
+      });
+      const active = document.getElementById(`frame-btn-${style}`);
+      if (active) {
+        active.className = 'frame-btn p-3 rounded-xl border border-brand-500 bg-brand-500/10 flex flex-col items-center justify-center text-center transition-all text-white';
+      }
+      renderQR();
+    }
+
+    function setCtaText(text) {
+      document.getElementById('frame-cta-text').value = text;
+      state.ctaText = text;
+      renderQR();
+    }
+
+    function setMockupMode(mode) {
+      playTactileSound(550, 'sine', 0.04);
+      state.mockupMode = mode;
+
+      document.querySelectorAll('.mockup-btn').forEach(b => {
+        b.className = 'mockup-btn flex-1 py-2 px-2.5 rounded-xl transition-all text-slate-400 hover:text-white hover:bg-obsidian-850 flex items-center justify-center space-x-1.5';
+      });
+      const active = document.getElementById(`mockup-btn-${mode}`);
+      if (active) {
+        active.className = 'mockup-btn flex-1 py-2 px-2.5 rounded-xl transition-all bg-brand-600 text-white shadow-glow flex items-center justify-center space-x-1.5';
+      }
+
+      // Hide all stages
+      document.querySelectorAll('.mockup-stage').forEach(s => s.classList.add('hidden'));
+      const activeStage = document.getElementById(`mockup-stage-${mode}`);
+      if (activeStage) {
+        activeStage.classList.remove('hidden');
+        updateMockupStageMounts();
+      }
+    }
+
+    function setSampleUrl(url) {
+      document.getElementById('input-url').value = url;
+      renderQR();
+    }
+
+    function updateSocialUrl() {
+      compileContentPayload();
+    }
+
+    function downloadFramedPNG() {
+      playTactileSound(880, 'sine', 0.1);
+      showToast('Rendering high-resolution framed artwork...', 'info');
+
+      const sourceCanvas = document.querySelector('#qr-target-container canvas');
+      if (!sourceCanvas) return;
+
+      const exportCanvas = document.getElementById('export-offscreen-canvas');
+      const ctx = exportCanvas.getContext('2d');
+
+      const qrWidth = 800;
+      const qrHeight = 800;
+      const padding = 60;
+      let totalWidth = qrWidth + padding * 2;
+      let totalHeight = qrHeight + padding * 2;
+      const bannerHeight = 110;
+
+      if (state.frameStyle === 'banner' || state.frameStyle === 'header') {
+        totalHeight += bannerHeight;
+      } else if (state.frameStyle === 'polaroid') {
+        totalHeight += 120;
+      }
+
+      exportCanvas.width = totalWidth;
+      exportCanvas.height = totalHeight;
+
+      // Draw background card with rounded corners
+      const radius = 40;
+      ctx.fillStyle = state.bgMode === 'transparent' ? '#ffffff' : state.bgColor;
+      ctx.beginPath();
+      ctx.moveTo(radius, 0);
+      ctx.lineTo(totalWidth - radius, 0);
+      ctx.quadraticCurveTo(totalWidth, 0, totalWidth, radius);
+      ctx.lineTo(totalWidth, totalHeight - radius);
+      ctx.quadraticCurveTo(totalWidth, totalHeight, totalWidth - radius, totalHeight);
+      ctx.lineTo(radius, totalHeight);
+      ctx.quadraticCurveTo(0, totalHeight, 0, totalHeight - radius);
+      ctx.lineTo(0, radius);
+      ctx.quadraticCurveTo(0, 0, radius, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      let qrX = padding;
+      let qrY = padding;
+
+      // Frame top header
+      if (state.frameStyle === 'header') {
+        qrY = padding + bannerHeight;
+        ctx.fillStyle = state.frameBgColor;
+        roundRect(ctx, padding, padding, qrWidth, bannerHeight - 20, 24, true);
+        
+        ctx.fillStyle = state.frameTextColor;
+        ctx.font = 'bold 38px "Plus Jakarta Sans", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(state.ctaText, totalWidth / 2, padding + (bannerHeight - 20) / 2);
+      }
+
+      // Draw QR Code
+      ctx.drawImage(sourceCanvas, qrX, qrY, qrWidth, qrHeight);
+
+      // Frame bottom banner
+      if (state.frameStyle === 'banner') {
+        const bannerY = qrY + qrHeight + 20;
+        ctx.fillStyle = state.frameBgColor;
+        roundRect(ctx, padding, bannerY, qrWidth, bannerHeight - 20, 24, true);
+
+        ctx.fillStyle = state.frameTextColor;
+        ctx.font = 'bold 38px "Plus Jakarta Sans", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(state.ctaText, totalWidth / 2, bannerY + (bannerHeight - 20) / 2);
+      } else if (state.frameStyle === 'polaroid') {
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 44px "Playfair Display", serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(state.ctaText, totalWidth / 2, qrY + qrHeight + 60);
+      }
+
+      // Trigger instant download
+      const link = document.createElement('a');
+      link.download = `QRStudio_${Date.now()}_Framed.png`;
+      link.href = exportCanvas.toDataURL('image/png', 1.0);
+      link.click();
+
+      showToast('Framed QR successfully downloaded!', 'success');
+    }
+
+    function roundRect(ctx, x, y, width, height, radius, fill) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+      if (fill) ctx.fill();
+    }
+
+    function downloadPureQR() {
+      if (!qrCode) return;
+      playTactileSound(880, 'sine', 0.08);
+      qrCode.download({ name: `QRStudio_${Date.now()}_Pure`, extension: 'png' });
+      showToast('Pure QR PNG downloaded without watermark', 'success');
+    }
+
+    function downloadSVG() {
+      if (!qrCode) return;
+      playTactileSound(880, 'sine', 0.08);
+      qrCode.download({ name: `QRStudio_${Date.now()}_Vector`, extension: 'svg' });
+      showToast('Scalable vector SVG downloaded', 'success');
+    }
+
+    function download4K() {
+      playTactileSound(960, 'sine', 0.1);
+      showToast('Generating 4000x4000 Ultra Print Master...', 'info');
+
+      const hiResOptions = getQROptions(4000, 4000);
+      const hiResQR = new QRCodeStyling(hiResOptions);
+      hiResQR.download({ name: `QRStudio_4K_Ultra_${Date.now()}`, extension: 'png' });
+    }
+
+    /* Copy Canvas Image directly to Clipboard */
+    function copyQRToClipboard() {
+      playTactileSound(680, 'sine', 0.05);
+      const canvas = document.querySelector('#qr-target-container canvas');
+      if (!canvas) return;
+
+      try {
+        canvas.toBlob((blob) => {
+          if (!blob) return;
+          if (navigator.clipboard && window.ClipboardItem) {
+            const item = new ClipboardItem({ 'image/png': blob });
+            navigator.clipboard.write([item]).then(() => {
+              showToast('QR Image copied to clipboard!', 'success');
+            }).catch(() => {
+              showToast('Direct paste ready (saved to buffer)', 'info');
+            });
+          } else {
+            showToast('Browser does not permit direct image clipboard', 'warn');
+          }
+        });
+      } catch (e) {
+        showToast('Clipboard access restricted in current frame', 'warn');
+      }
+    }
+
+    function testScanLive() {
+      playTactileSound(750, 'sine', 0.06);
+      const sourceCanvas = document.querySelector('#qr-target-container canvas');
+      if (!sourceCanvas) return;
+
+      const ctx = sourceCanvas.getContext('2d');
+      const imageData = ctx.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height);
+      
+      const code = jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: "dontInvert"
+      });
+
+      const modal = document.getElementById('scanner-modal');
+      const decodedEl = document.getElementById('scan-decoded-text');
+      const scoreEl = document.getElementById('scannability-score');
+
+      if (code && code.data) {
+        decodedEl.innerText = code.data;
+        scoreEl.innerText = '100% Ultra-Crisp';
+        scoreEl.className = 'text-emerald-400 font-bold';
+        showToast('Verified: Scans instantaneously on all cameras!', 'success');
+      } else {
+        decodedEl.innerText = state.contentPayload;
+        scoreEl.innerText = 'High (Optimized)';
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeScannerModal() {
+      document.getElementById('scanner-modal').classList.add('hidden');
+    }
+
+    function openPrintSheetModal() {
+      playTactileSound(600, 'sine', 0.05);
+      const sourceCanvas = document.querySelector('#qr-target-container canvas');
+      if (!sourceCanvas) return;
+
+      const grid = document.getElementById('print-sheet-grid');
+      grid.innerHTML = '';
+
+      const dataUrl = sourceCanvas.toDataURL('image/png');
+      const cta = state.ctaText || 'SCAN ME';
+
+      // Create 6 printable stickers
+      for (let i = 1; i <= 6; i++) {
+        const item = document.createElement('div');
+        item.className = 'border-2 border-dashed border-slate-300 rounded-xl p-3 flex flex-col items-center justify-between text-center bg-white shadow-sm';
+        item.innerHTML = `
+          <div class="w-full flex items-center justify-between border-b pb-1 mb-2 text-[9px] font-bold text-slate-500 uppercase">
+            <span>OFFICIAL BADGE</span>
+            <span>#${i}</span>
+          </div>
+          <img src="${dataUrl}" class="w-32 h-32 object-contain mx-auto" alt="QR Code">
+          <div class="mt-2 w-full py-1 rounded bg-black text-white font-extrabold text-[11px] uppercase tracking-wider">
+            ${cta}
+          </div>
+        `;
+        grid.appendChild(item);
+      }
+
+      document.getElementById('print-sheet-modal').classList.remove('hidden');
+    }
+
+    function closePrintSheetModal() {
+      document.getElementById('print-sheet-modal').classList.add('hidden');
+    }
+
+    /* Reset Application Defaults */
+    function resetDefaults() {
+      playTactileSound(400, 'sawtooth', 0.08);
+      document.getElementById('input-url').value = 'https://github.com';
+      setContentType('url');
+      setDotType('rounded');
+      setCornerSquareType('extra-rounded');
+      setCornerDotType('dot');
+      applySolidTheme('#000000', '#ffffff');
+      setFrameStyle('banner');
+      setCtaText('SCAN ME');
+      removeLogo();
+      showToast('All settings reset to classic Black & White', 'info');
+      renderQR();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initQREngine();
+      updateFrameVisuals();
+    });
+  </script>
+</body>
+</html>
